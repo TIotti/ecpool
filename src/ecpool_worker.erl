@@ -259,13 +259,14 @@ connect_internal(State) ->
         {error, Error} ->
             {error, Error}
     catch
-        _C:Reason:ST -> {error, {Reason, ST}}
+        _C:Reason -> 
+            {error, Reason}
     end.
 
 safe_exec({_M, _F, _A} = Action, MainArg) ->
     try exec(Action, MainArg)
-    catch E:R:ST ->
-        logger:error("[PoolWorker] safe_exec ~p, failed: ~0p", [Action, {E,R,ST}]),
+    catch E:R ->
+        logger:error("[PoolWorker] safe_exec ~p, failed: ~0p", [Action, {E,R}]),
         {error, {exec_failed, E, R}}
     end;
 
